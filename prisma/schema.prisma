@@ -1,0 +1,122 @@
+// schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./bookr.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+    name      String
+  email     String      @unique
+  password  String
+  createdAt DateTime @default(now())
+  books Book[]
+   
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name  String  
+  email  String
+  createdAt DateTime @default(now())
+
+  // Relationships
+  reviews   Review[]
+  ratings   Rating[]
+  
+  // recommendations Recommendation[]
+  // activities UserActivity[]
+  //   replies   Reply[]
+ 
+}
+
+model Book {
+   id        Int     @id @default(autoincrement())
+  title     String
+  image     String
+  author    String
+  year      Int
+  price     Int
+  available Boolean @default(true)
+
+  adminId Int
+
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  admin Admin @relation(fields: [adminId], references: [id])
+
+  // Relationships
+  reviews     Review[]
+  ratings     Rating[]
+  // recommendations Recommendation[]
+    // activities UserActivity[]
+}
+
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+  // replies   Reply[]
+    // activities UserActivity[]
+}
+model Rating {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  rating    Int
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+  
+}
+
+// model Recommendation {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int
+//   bookId    Int
+//   createdAt DateTime @default(now())
+
+//   // Relationships
+//   user      User     @relation(fields: [userId], references: [id])
+//   book      Book     @relation(fields: [bookId], references: [id])
+// }
+// model Reply {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int
+//   reviewId  Int
+//   content   String
+//   createdAt DateTime @default(now())
+
+//   // Relationships
+//   user User     @relation(fields: [userId], references: [id])
+//   review    Review   @relation(fields: [reviewId], references: [id])
+// }
+
+// model UserActivity {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int
+//   action    String
+//   bookId    Int?
+//   reviewId  Int?
+//   createdAt DateTime @default(now())
+
+//   // Relationships
+//   user      User     @relation(fields: [userId], references: [id])
+//   book      Book?    @relation(fields: [bookId], references: [id])
+//   review    Review?  @relation(fields: [reviewId], references: [id])
+// }
