@@ -14,7 +14,7 @@ const server = express()
 server.use(express.json())
 // Routes
 server.use('/admins', adminRoutes);
-server.use('/api/users', userRoutes);
+server.use('/users', userRoutes);
 server.use('/books', bookRoutes);
 server.use('/reviews', reviewRoutes);
 server.use('/replies', replyRoutes);

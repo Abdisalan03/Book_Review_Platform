@@ -2,7 +2,7 @@
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./bookr.db"
+    url      = "file:./data/rest.db"
 }
 
 generator client {
@@ -26,12 +26,9 @@ model User {
   createdAt DateTime @default(now())
 
   // Relationships
-  reviews   Review[]
-  ratings   Rating[]
-  
-  // recommendations Recommendation[]
-  // activities UserActivity[]
-  //   replies   Reply[]
+  recommendations Recommendation[]
+  activities UserActivity[]
+    replies   Reply[]
  
 }
 
@@ -54,69 +51,67 @@ model Book {
   // Relationships
   reviews     Review[]
   ratings     Rating[]
-  // recommendations Recommendation[]
-    // activities UserActivity[]
+  recommendations Recommendation[]
+    activities UserActivity[]
 }
 
 
 model Review {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  bookId    Int
-  content   String
+raview  Int
+bookId Int
+  content   String?
   createdAt DateTime @default(now())
 
   // Relationships
-  user      User     @relation(fields: [userId], references: [id])
   book      Book     @relation(fields: [bookId], references: [id])
-  // replies   Reply[]
-    // activities UserActivity[]
 }
 model Rating {
   id        Int      @id @default(autoincrement())
-  userId    Int
   bookId    Int
   rating    Int
   createdAt DateTime @default(now())
 
   // Relationships
-  user      User     @relation(fields: [userId], references: [id])
+ 
   book      Book     @relation(fields: [bookId], references: [id])
   
 }
 
-// model Recommendation {
-//   id        Int      @id @default(autoincrement())
-//   userId    Int
-//   bookId    Int
-//   createdAt DateTime @default(now())
+model Recommendation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  createdAt DateTime @default(now())
 
-//   // Relationships
-//   user      User     @relation(fields: [userId], references: [id])
-//   book      Book     @relation(fields: [bookId], references: [id])
-// }
-// model Reply {
-//   id        Int      @id @default(autoincrement())
-//   userId    Int
-//   reviewId  Int
-//   content   String
-//   createdAt DateTime @default(now())
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+}
+model Reply {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  reviewId  Int
+  content   String
+  createdAt DateTime @default(now())
 
-//   // Relationships
-//   user User     @relation(fields: [userId], references: [id])
-//   review    Review   @relation(fields: [reviewId], references: [id])
-// }
+  // Relationships
+  user User     @relation(fields: [userId], references: [id])
+  
+}
 
-// model UserActivity {
-//   id        Int      @id @default(autoincrement())
-//   userId    Int
-//   action    String
-//   bookId    Int?
-//   reviewId  Int?
-//   createdAt DateTime @default(now())
+model UserActivity {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  action    String
+  bookId    Int?
+  reviewId  Int?
+  createdAt DateTime @default(now())
 
-//   // Relationships
-//   user      User     @relation(fields: [userId], references: [id])
-//   book      Book?    @relation(fields: [bookId], references: [id])
-//   review    Review?  @relation(fields: [reviewId], references: [id])
-// }
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book?    @relation(fields: [bookId], references: [id])
+ 
+}
+
+

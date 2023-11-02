@@ -1,6 +1,10 @@
 import express from 'express'
 import prisma from './lib/index.js';
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import "dotenv/config.js"
+
+const SECRET_KEY = "secret_Key";
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
