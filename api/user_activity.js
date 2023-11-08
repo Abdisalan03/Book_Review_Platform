@@ -1,11 +1,12 @@
 import express from "express";
 import prisma from "./lib/index.js";
+import userauthenticate from "./middleware/user_authenticate.js";
 const router = express.Router();
 
 // Define User_activity routes here
 
 // get all User_activities
-router.get('/', async (req, res) => {
+router.get('/', userauthenticate, async (req, res) => {
     try {
         const userActivities = await prisma.userActivity.findMany();
         if (userActivities) {
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get ID User_activity
-router.get('/:id', async (req, res) => {
+router.get('/:id', userauthenticate,async (req, res) => {
     try {
         const userActivity = await prisma.userActivity.findUnique({
             where: {
@@ -38,7 +39,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Add User_activity
-router.post('/', async (req, res) => {
+router.post('/', userauthenticate,async (req, res) => {
     try {
         const userActivity = await prisma.userActivity.create({
             data: req.body,
@@ -55,7 +56,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update User_activity
-router.put('/:id', async (req, res) => {
+router.put('/:id',userauthenticate, async (req, res) => {
     try {
         const userActivity = await prisma.userActivity.update({
             where: {
@@ -75,7 +76,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete User_activity
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', userauthenticate,async (req, res) => {
     try {
         const userActivity = await prisma.userActivity.delete({
             where: {

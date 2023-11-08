@@ -1,10 +1,10 @@
 import express from "express";
 import prisma from "./lib/index.js";
-
+import userauthenticate from "./middleware/user_authenticate.js";
 const router = express.Router();
 
 // get all Rating
-router.get('/', async (req, res) => {
+router.get('/', userauthenticate,async (req, res) => {
     try {
       const ratings = await prisma.rating.findMany();
       if (ratings) {
@@ -15,10 +15,11 @@ router.get('/', async (req, res) => {
       } catch(err) {
         res.status(500).json({ message: 'Failed to get ratings' });
       }
+      
   });
   
   // Get ID rating
-  router.get('/:id', async (req, res) => {
+  router.get('/:id',userauthenticate, async (req, res) => {
       try {
           const rating = await prisma.rating.findUnique({
               where: {
@@ -37,7 +38,7 @@ router.get('/', async (req, res) => {
   });
   
   // Add rating
-  router.post('/', async (req, res) => {
+  router.post('/',userauthenticate, async (req, res) => {
       try {
           const rating = await prisma.rating.create({
               data: req.body,
@@ -51,10 +52,11 @@ router.get('/', async (req, res) => {
       } catch(err) {
           res.status(500).json({ message: 'Failed to add rating' });
       }
+      
   });
   
   // Update rating
-  router.put('/:id', async (req, res) => {
+  router.put('/:id',userauthenticate, async (req, res) => {
       try {
           const rating = await prisma.rating.update({
               where: {
@@ -74,7 +76,7 @@ router.get('/', async (req, res) => {
   });
   
   // Delete rating
-  router.delete('/:id', async (req, res) => {
+  router.delete('/:id',userauthenticate, async (req, res) => {
       try {
           const rating = await prisma.rating.delete({
               where: {

@@ -1,11 +1,10 @@
 import express from "express"
 import prisma from "./lib/index.js";
 const router = express.Router();
-
-// Define review routes here
+import userauthenticate from "./middleware/user_authenticate.js";
 
 // get all Review
-router.get('/', async (req, res) => {
+router.get('/',userauthenticate, async (req, res) => {
     try {
       const reviews = await prisma.review.findMany();
       if (reviews) {
@@ -19,7 +18,7 @@ router.get('/', async (req, res) => {
   });
   
   // Get ID Review
-  router.get('/:id', async (req, res) => {
+  router.get('/:id',userauthenticate, async (req, res) => {
       try {
           const reviewe = await prisma.review.findUnique({
               where: {
@@ -38,7 +37,7 @@ router.get('/', async (req, res) => {
   });
   
   // Add Review
-  router.post('/', async (req, res) => {
+  router.post('/',userauthenticate, async (req, res) => {
       try {
           const reviewe = await prisma.review.create({
               data: req.body,
@@ -55,7 +54,7 @@ router.get('/', async (req, res) => {
   });
   
   // Update Review
-  router.put('/:id', async (req, res) => {
+  router.put('/:id',userauthenticate, async (req, res) => {
       try {
           const reviewe = await prisma.review.update({
               where: {
@@ -75,7 +74,7 @@ router.get('/', async (req, res) => {
   });
   
   // Delete Review
-  router.delete('/:id', async (req, res) => {
+  router.delete('/:id',userauthenticate, async (req, res) => {
       try {
           const reviewe = await prisma.review.delete({
               where: {

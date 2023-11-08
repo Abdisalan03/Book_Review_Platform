@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import "dotenv/config.js"
 
-const SECRET_KEY = "secret_Key";
+const SECRET_KEY = "secretkey1234";
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {

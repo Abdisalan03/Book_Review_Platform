@@ -5,7 +5,6 @@ import bookRoutes from './books.js'
 import reviewRoutes from './reviews.js'
 import replyRoutes from './replies.js'
 import ratingRoutes from './rating.js'
-import recommendationRoutes from './recommendation.js'
 import userActivityRoutes from './user_activity.js'
 
 const server = express()
@@ -19,7 +18,6 @@ server.use('/books', bookRoutes);
 server.use('/reviews', reviewRoutes);
 server.use('/replies', replyRoutes);
 server.use('/ratings', ratingRoutes);
-server.use('/recommendation', recommendationRoutes);
 server.use('/user-activity', userActivityRoutes);
 
 

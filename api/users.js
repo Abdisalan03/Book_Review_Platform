@@ -1,112 +1,78 @@
 import express from "express"
 import prisma from "./lib/index.js";
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import "dotenv/config.js"
+
+const SECRET_KEY = "secretkey1234";
+
+
+
 const router = express.Router();
+// User Signup
+router.post('/signup', async (req, res) => {
+  const { name, email, password } = req.body;
 
-// get all users 
-router.get("/", async (req, res) => {
-  
   try {
-    const users = await prisma.user.findMany();
-    if (users.length === 0) {
-      return res
-        .status(404)
-        .json({ status: 404, message: "users not found" });
-    }
-
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({  message: error.message });
-  }
-});
-
-// get user by id
-router.get("/:id", async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: Number(req.params.id) },
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
     });
-    if (!user) {
-      return res.status(404).json({ status: 404, message: "user not found" });
+
+    if (existingUser) {
+      return res.status(409).json({ status: 409, message: "User already exists" });
     }
 
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({  message: error.message });
-  }
-});
-// create new user
-router.post("/", async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    const user = await prisma.user.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name,
+        email: email,
+        password: hashedPassword,
       },
     });
-    
-    if (!user) {
-      return res.status(400).json({
-        status: 400,
-        message: "User was not created!",
-      });
-    }
 
-    res.status(200).json({
-      message: "User successfully created!",
-    });
+    res.status(201).json({ status: 201, message: "User created successfully", newUser });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "An error occurred while creating the user.",
-    });
+    res.status(500).json({ status: 500, message: "Something went wrong", error: error.message });
   }
 });
 
-// update user
-router.put("/:id", async (req, res) => {
+// User Login
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const user = await prisma.user.update({
+    const existingUser = await prisma.user.findFirst({
       where: {
-        id: Number(req.params.id),
+        email: email,
       },
-      data: req.body,
     });
-    if (!user) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "user was not updated!" });
+
+    if (!existingUser) {
+      return res.status(404).json({ status: 404, message: "User not found" });
     }
 
-    res
-      .status(200)
-      .json({  message: "user successFully updated!" });
+    const isCorrectPassword = await bcrypt.compare(password, existingUser.password);
+
+    if (!isCorrectPassword) {
+      return res.status(401).json({ status: 401, message: "Incorrect password" });
+    }
+
+    const token = jwt.sign(
+      { id: existingUser.id, email: existingUser.email },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({ status: 200, message: "User logged in successfully", token });
+
   } catch (error) {
-    res.status(500).json({  message: error.message });
+    res.status(500).json({ status: 500, message: "Something went wrong", error: error.message });
   }
 });
 
-// delete user
-router.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await prisma.user.delete({
-      where: {
-        id: Number(id),
-      },
-    });
-    if (!user) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "user was not deleted!" });
-    }
-
-    res
-      .status(200)
-      .json({  message: `user ${id} successFully deleted` });
-  } catch (error) {
-    res.status(500).json({  message: error.message });
-  }
-});
-
-export default router
+export default router;

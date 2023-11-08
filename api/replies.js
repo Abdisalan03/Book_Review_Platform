@@ -1,11 +1,11 @@
 import express from "express";
 import prisma from "./lib/index.js";
 const router = express.Router();
-
+import userauthenticate from "./middleware/user_authenticate.js";
 // Define reply routes here
 
 // get all Replies
-router.get('/', async (req, res) => {
+router.get('/', userauthenticate,async (req, res) => {
     try {
         const replies = await prisma.reply.findMany();
         if (replies) {
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get ID Reply
-router.get('/:id', async (req, res) => {
+router.get('/:id',userauthenticate, async (req, res) => {
     try {
         const reply = await prisma.reply.findUnique({
             where: {
@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Add Reply
-router.post('/', async (req, res) => {
+router.post('/',userauthenticate, async (req, res) => {
     try {
         const reply = await prisma.reply.create({
             data: req.body,
@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update Reply
-router.put('/:id', async (req, res) => {
+router.put('/:id',userauthenticate, async (req, res) => {
     try {
         const reply = await prisma.reply.update({
             where: {
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete Reply
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',userauthenticate, async (req, res) => {
     try {
         const reply = await prisma.reply.delete({
             where: {

@@ -1,11 +1,10 @@
 // Create endpoints for books, make sure to use the middleware to authenticate the token
 import express from "express";
 import prisma from "./lib/index.js";
-import authenticate from "./middleware/authenticate.js";
-
+import admin_authenticate from "./middleware/admin_authenticate.js";
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", admin_authenticate, async (req, res) => {
   try {
     const books = await prisma.book.findMany();
     if (books.length === 0) {
@@ -18,7 +17,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", admin_authenticate,async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -38,17 +37,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", authenticate, async (req, res) => {
+router.post("/", admin_authenticate, async (req, res) => {
   try {
-    const { title, image, author, year, available, adminId, price } = req.body;
+    const { title, author, year, adminId, price } = req.body;
 
     const newBook = await prisma.book.create({
       data: {
         title,
-        image,
         author,
         year,
-        available,
         adminId,
         price,
       },
@@ -68,10 +65,10 @@ router.post("/", authenticate, async (req, res) => {
   }
 });
 
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", admin_authenticate, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, image, author, year, available, adminId } = req.body;
+    const { title, author, year, adminId } = req.body;
 
     const updateBook = await prisma.book.update({
       where: {
@@ -80,10 +77,7 @@ router.put("/:id", authenticate, async (req, res) => {
 
       data: {
         title,
-        image,
         author,
-        year,
-        available,
         adminId,
       },
     });
@@ -100,7 +94,7 @@ router.put("/:id", authenticate, async (req, res) => {
   }
 });
 
-router.delete("/:id", authenticate, async (req, res) => {
+router.delete("/:id", admin_authenticate, async (req, res) => {
   try {
     const { id } = req.params;
 
