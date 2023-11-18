@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import "dotenv/config.js"
 
+
 const SECRET_KEY = "secretkey1234";
 
 
