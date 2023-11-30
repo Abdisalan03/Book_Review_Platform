@@ -8,7 +8,6 @@ import "dotenv/config.js"
 const SECRET_KEY = "secretkey1234";
 
 
-
 const router = express.Router();
 // User Signup
 router.post('/signup', async (req, res) => {
@@ -47,7 +46,7 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const existingUser = await prisma.user.findFirst({
+    const existingUser = await prisma.user.findUnique({
       where: {
         email: email,
       },
@@ -66,7 +65,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: existingUser.id, email: existingUser.email },
       SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
     res.status(200).json({ status: 200, message: "User logged in successfully", token });
