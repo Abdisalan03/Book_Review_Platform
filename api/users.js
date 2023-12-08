@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import "dotenv/config.js"
 
 
-const SECRET_KEY = "secretkey1234";
+const SECRET_KEY = process.env.SECTRET_KEY;
 
 
 const router = express.Router();
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findFirst({
       where: {
         email: email,
       },

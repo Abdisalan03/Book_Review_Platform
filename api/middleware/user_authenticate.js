@@ -2,10 +2,10 @@
 // set up token middleware here
 import jwt from 'jsonwebtoken'
 import "dotenv/config.js"
-const SECRET_KEY = "secretkey1234";
+const SECRET_KEY = process.env.SECTRET_KEY;
 
 const userauthenticate = (req, res, next) => {
-    const token = req.headers.userauthenticate
+    const token = req.headers.authorization 
 
     if(!token) {
         return res.status(401).json({status: 401, message: "User Authentication failed - missing token"})
